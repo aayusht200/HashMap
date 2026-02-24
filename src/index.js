@@ -1,5 +1,54 @@
-// import './style.css';
+import './style.css';
 
+/**
+ * HashMap - A hash table implementation with collision handling via chaining.
+ * 
+ * @class HashMap
+ * @description A data structure that stores key-value pairs and uses hashing for efficient
+ * retrieval. Includes automatic resizing when load factor exceeds threshold.
+ * 
+ * @property {number} capacity - The current number of buckets in the hash map
+ * @property {number} loadFactor - The threshold ratio (0.75) that triggers resizing
+ * @property {Array} bucket - Array of buckets, each containing key-value pairs
+ * @property {number} size - The current number of key-value pairs stored
+ * 
+ * @constructor
+ * @param {number} [capacity=16] - Initial capacity of the hash map
+ * 
+ * @method hash(key) - Generates a hash index for a given key
+ * @param {string} key - The key to hash
+ * @returns {number} The hash index within the bucket array
+ * 
+ * @method set(key, value) - Adds or updates a key-value pair
+ * @param {string} key - The key to set
+ * @param {*} value - The value to associate with the key
+ * 
+ * @method get(key) - Retrieves the value associated with a key
+ * @param {string} key - The key to retrieve
+ * @returns {*} The value associated with the key, or undefined if not found
+ * 
+ * @method has(key) - Checks if a key exists in the hash map
+ * @param {string} key - The key to check
+ * @returns {boolean} True if the key exists, false otherwise
+ * 
+ * @method remove(key) - Removes a key-value pair from the hash map
+ * @param {string} key - The key to remove
+ * @returns {boolean} True if the key was found and removed, false otherwise
+ * 
+ * @method keys() - Returns an array of all keys
+ * @returns {Array<string>} Array containing all keys in the hash map
+ * 
+ * @method values() - Returns an array of all values
+ * @returns {Array<*>} Array containing all values in the hash map
+ * 
+ * @method entries() - Returns an array of all key-value pairs
+ * @returns {Array<Array>} Array of [key, value] pairs
+ * 
+ * @method length() - Returns the number of key-value pairs
+ * @returns {number} The current size of the hash map
+ * 
+ * @method resize() - Doubles the capacity and rehashes all entries
+ */
 class HashMap {
     constructor(capacity = 16) {
         this.capacity = capacity;
