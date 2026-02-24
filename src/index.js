@@ -1,38 +1,108 @@
-import './style.css';
+// import './style.css';
 
 class HashMap {
-    constructor() {
-        this.capacity = 16;
+    constructor(capacity = 16) {
+        this.capacity = capacity;
         this.loadFactor = 0.75;
-        this.table = new Array(this.capacity);
+        this.bucket = new Array(this.capacity);
+        this.size = 0;
     }
     hash(key) {
-        let hashCode = 0;
+        let hashKey = 0;
         const primeNumber = 31;
         for (let i = 0; i < key.length; i++) {
-            hashCode = primeNumber * hashCode + key.charCodeAt(i);
+            hashKey = primeNumber * hashKey + key[i].charCodeAt();
         }
-        return hashCode % this.capacity;
+        return hashKey % this.capacity;
     }
     set(key, value) {
         const index = this.hash(key);
-        this.table[index] = [key, value];
+        if (this.length() >= this.bucket.length * this.loadFactor) {
+            this.resize();
+        }
+        if (!this.bucket[index]) {
+            this.bucket[index] = [];
+        }
+        for (let bucket of this.bucket[index]) {
+            if (bucket[0] === key) {
+                bucket[1] = value;
+                return;
+            }
+        }
+        this.bucket[index].push([key, value]);
+        this.size++;
     }
     get(key) {
         const index = this.hash(key);
-        if (this.table[index]) return this.table[index];
-        return undefined;
+        if (!this.bucket[index]) return undefined;
+        for (let bucket of this.bucket[index])
+            if (bucket[0] === key) {
+                return bucket[1];
+            }
     }
-    display() {
-        for (let i = 0; i < this.table.length; i++) {
-            if (this.table[i]) console.log(this.table[i]);
+    has(key) {
+        const index = this.hash(key);
+        if (!this.bucket[index]) return false;
+        for (let bucket of this.bucket[index]) if (bucket[0] === key) return true;
+        return false;
+    }
+    remove(key) {
+        const index = this.hash(key);
+        const bucket = this.bucket[index];
+        if (!bucket) return false;
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i][0] === key) {
+                bucket.splice(i, 1);
+                this.size--;
+                if (bucket.length === 0) this.bucket[index] = undefined;
+                return true;
+            }
+        }
+        return false;
+    }
+    keys() {
+        const keysArr = [];
+        for (const bucket of this.bucket) {
+            if (bucket) {
+                for (const [key, value] of bucket) keysArr.push(key);
+            }
+        }
+        return keysArr;
+    }
+    values() {
+        let valuesArr = [];
+        for (let bucket of this.bucket)
+            if (bucket) {
+                for (const [key, value] of bucket) valuesArr.push(value);
+            }
+        return valuesArr;
+    }
+    entries() {
+        let entriesArr = [];
+        for (let bucket of this.bucket)
+            if (bucket) {
+                for (const [key, value] of bucket) entriesArr.push([key, value]);
+            }
+        return entriesArr;
+    }
+    length() {
+        return this.size;
+    }
+    resize() {
+        const oldBucket = this.bucket;
+        const newCapacity = this.capacity * 2;
+        this.bucket = new Array(newCapacity);
+        this.capacity = newCapacity;
+        this.size = 0;
+        for (let i = 0; i < oldBucket.length; i++) {
+            const bucket = oldBucket[i];
+            if (bucket) {
+                for (const [key, value] of bucket) {
+                    this.set(key, value);
+                }
+            }
         }
     }
 }
 
-let test = new HashMap();
-// console.log(test.set('ayuash', 'ayuash'));
-// console.log(test.set('Aayush', 'Aayush'));
-console.log(test.set('Test', 'temp'));
-console.log(test.get('Test'));
-// test.display();
+module.exports = HashMap;
